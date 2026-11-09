@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, CalendarDays, ClipboardList, CircleHelp, Database, FileSpreadsheet, GraduationCap, LayoutDashboard, ShieldCheck, Users, X } from "lucide-react";
 import type { DashboardTab } from "@/types/dashboard";
 
@@ -22,17 +24,11 @@ interface SidebarProps {
 
 function SidebarContent({ activePage, connected, onNavigate, onClose, onOpenDialog }: Omit<SidebarProps, "mobileOpen">) {
   return <>
-    <div className="flex h-[86px] shrink-0 items-center justify-between px-2">
-      <a href="/" className="flex items-center gap-2.5" aria-label="Francis James Operations Hub">
-        <span className="flex size-10 items-center justify-center rounded-lg bg-[#364f6b] pb-1 pr-1 text-[29px] font-semibold tracking-[-3px] text-white">fj<span className="text-slate-300">.</span></span>
-        <span className="text-[11px] font-bold tracking-[.11em] text-[#364f6b]">FRANCIS JAMES<span className="mt-1 block text-[7px] font-medium tracking-[.22em] text-slate-400">BUILDING FUTURES</span></span>
-      </a>
+    <div className="flex h-[120px] shrink-0 items-center justify-between px-2">
+      <Link href="/" className="flex items-center gap-2.5" aria-label="Francis James Operations Hub">
+        <Image src="/images/fj-logo.png" alt="Francis James" width={1167} height={709} className="h-auto w-[100px]" />
+      </Link>
       <button onClick={onClose} aria-label="Close navigation" className="icon-button lg:hidden"><X size={17} /></button>
-    </div>
-    <div className="mb-7 flex items-center gap-2.5 rounded-lg border border-slate-200 bg-slate-50/50 px-2.5 py-3">
-      <span className="flex size-8 items-center justify-center rounded-md bg-slate-100 text-[#364f6b]"><GraduationCap size={18} /></span>
-      <div className="text-[11px] font-medium text-slate-600">Staff workspace<p className="mt-1 text-[9px] font-normal text-slate-400">Delivery & operations</p></div>
-      <span className="ml-auto size-1.5 rounded-full bg-emerald-400" />
     </div>
     <p className="mb-3 px-3 text-[9px] font-semibold tracking-[.15em] text-slate-400">WORKSPACE</p>
     <nav aria-label="Main navigation" className="space-y-1">
