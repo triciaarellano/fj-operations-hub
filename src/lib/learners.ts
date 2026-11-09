@@ -1,37 +1,9 @@
-export const PATHWAYS = ["Quantity Surveying", "Civil Engineering", "Building Services Engineering", "Construction Management"] as const;
-export const COHORTS = ["Jan 2026", "Sept 2026", "Jan 2027"] as const;
-export type Learner = {
-  id: string;
-  name: string;
-  email: string;
-  level: 4 | 5 | 6;
-  lectureNights: string;
-  pathway: (typeof PATHWAYS)[number];
-  requirements: string;
-  notes: string;
-  cohort: (typeof COHORTS)[number];
-};
+import { COHORTS, PATHWAYS, STATUSES, MOCK_LEARNERS } from "../data/mockData.ts";
+import type { Learner, LearnerResponse, SubmissionStatus } from "../types/dashboard.ts";
 
-const names = ["Connor McIntyre", "Thomas Brooker", "Steven Crissall", "Kitty Marshall-Clarke", "Oliver Bennett", "Amelia Richardson", "James Whitfield", "Sophie Thompson", "Jack Harrison", "Emily Clarke", "Daniel Hughes", "Grace Wilson", "Harry Mitchell", "Isla Anderson", "George Taylor", "Freya Robinson", "Charlie Edwards", "Mia Walker", "William Scott", "Evie Morgan", "Oscar Davies", "Lily Roberts", "Archie Lewis", "Ella Parker"];
-const levels: Learner["level"][] = [4, 5, 6, 4, 5, 4, 6, 4, 4, 5, 4, 6, 4, 5, 4, 6, 4, 5, 4, 6, 4, 5, 4, 6];
-export const SAMPLE_LEARNERS: Learner[] = names.map((name, i) => ({
-  id: `FJ-${String(2026001 + i)}`,
-  name,
-  email: `${name.toLowerCase().replaceAll(" ", ".")}@example.com`,
-  level: levels[i],
-  lectureNights: levels[i] === 4 ? "Tue & Thu" : "Mon & Wed",
-  pathway: PATHWAYS[i % PATHWAYS.length],
-  requirements: i === 0 || i === 8 ? "CAD bridging" : i === 3 || i === 10 ? "GCSE English needed" : "",
-  notes: ["Progressing well", "Unit 2 review scheduled", "All units up to date", "Tutor feedback shared", "On track", "Additional tutor support", "", "Excellent engagement"][i % 8],
-  cohort: COHORTS[i % COHORTS.length],
-}));
-
-export type LearnerResponse = {
-  learners: Learner[];
-  source: "google-sheets" | "sample";
-  message: string;
-  updatedAt: string;
-};
+export { COHORTS, PATHWAYS };
+export { MOCK_LEARNERS as SAMPLE_LEARNERS };
+export type { Learner, LearnerResponse };
 
 /** Accepts camelCase fields or the delivery spreadsheet's column headings. */
 export function parseLearners(payload: unknown): Learner[] {
@@ -50,13 +22,14 @@ export function parseLearners(payload: unknown): Learner[] {
     const email = field("email", "Email");
     const level = Number(field("level", "Level").replace(/^(Level\s*|L)/i, ""));
     const pathway = field("pathway", "Study Pathway");
+    const status = field("status", "Submission Status", "Assignment Submission Status") || "Pending";
     const cohort = field("cohort", "Cohort / Intake");
-    if (!id || !name || !email || ![4, 5, 6].includes(level) || !PATHWAYS.includes(pathway as Learner["pathway"]) || !COHORTS.includes(cohort as Learner["cohort"]) || seen.has(id)) {
+    if (!id || !name || !email || ![4, 5, 6].includes(level) || !PATHWAYS.includes(pathway as Learner["pathway"]) || !STATUSES.includes(status as SubmissionStatus) || !COHORTS.includes(cohort as Learner["cohort"]) || seen.has(id)) {
       throw new Error("A learner has missing, unsupported, or duplicate fields.");
     }
     seen.add(id);
     return {
-      id, name, email, level: level as Learner["level"], pathway: pathway as Learner["pathway"], cohort: cohort as Learner["cohort"],
+      id, name, email, level: level as Learner["level"], pathway: pathway as Learner["pathway"], status: status as SubmissionStatus, cohort: cohort as Learner["cohort"],
       lectureNights: level === 4 ? "Tue & Thu" : "Mon & Wed",
       requirements: field("requirements", "Bridging / Special Requirements"),
       notes: field("notes", "Comments / Notes"),

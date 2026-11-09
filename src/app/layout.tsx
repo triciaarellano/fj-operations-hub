@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Delivery Dashboard | Francis James",
+  title: "FJ Operations Hub | Francis James",
   icons: { icon: "/icon.svg" },
-  description: "The Francis James staff portal for learners, study pathways, and lecture nights.",
+  description: "Francis James staff operations: learner records, course delivery, lecture schedules and bridging requirements.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
